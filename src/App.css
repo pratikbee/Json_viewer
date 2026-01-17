@@ -49,7 +49,7 @@
 }
 
 .sample-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -113,7 +113,7 @@
 }
 
 .panel-header::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -173,7 +173,8 @@
 }
 
 @keyframes sparkle {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1) rotate(0deg);
     opacity: 1;
   }
@@ -188,7 +189,7 @@
   padding: 24px;
   border: none;
   outline: none;
-  font-family: 'Fira Code', 'Courier New', monospace;
+  font-family: "Fira Code", "Courier New", monospace;
   font-size: 14px;
   resize: none;
   background: linear-gradient(to bottom, #fafbfc 0%, #f8f9fa 100%);
@@ -242,7 +243,7 @@
 }
 
 .tree-container::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -285,7 +286,7 @@
 }
 
 .empty-state::before {
-  content: '🌳';
+  content: "🌳";
   font-size: 4rem;
   margin-bottom: 20px;
   opacity: 0.5;
@@ -309,6 +310,58 @@
   color: #dc2626;
   font-size: 1.15rem;
   font-weight: 500;
+}
+
+.app-footer {
+  text-align: center;
+  padding: 24px 20px;
+  margin-top: 32px;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.app-footer p {
+  margin: 4px 0;
+}
+
+.app-footer strong {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.heart {
+  color: #ef4444;
+  animation: heartbeat 1.5s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  10%,
+  30% {
+    transform: scale(1.1);
+  }
+  20%,
+  40% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+.footer-note {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 8px;
+}
+
+.footer-note em {
+  font-style: italic;
+  color: #64748b;
 }
 
 @media (max-width: 1024px) {

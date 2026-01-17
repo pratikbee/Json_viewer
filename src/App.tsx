@@ -1,116 +1,116 @@
-import { useState } from 'react'
-import JsonTree from './components/JsonTree'
-import Breadcrumbs from './components/Breadcrumbs'
-import './App.css'
+import { useState } from "react";
+import JsonTree from "./components/JsonTree";
+import Breadcrumbs from "./components/Breadcrumbs";
+import "./App.css";
 
 function App() {
-  const [jsonInput, setJsonInput] = useState('')
-  const [jsonData, setJsonData] = useState<any>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [hoistedData, setHoistedData] = useState<any>(null)
-  const [hoistedPath, setHoistedPath] = useState<string[]>([])
+  const [jsonInput, setJsonInput] = useState("");
+  const [jsonData, setJsonData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [hoistedData, setHoistedData] = useState<any>(null);
+  const [hoistedPath, setHoistedPath] = useState<string[]>([]);
 
   // Normalize JSON to convert non-string keys to strings
   const normalizeKeys = (obj: any): any => {
-    if (obj === null || typeof obj !== 'object') {
-      return obj
+    if (obj === null || typeof obj !== "object") {
+      return obj;
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(normalizeKeys)
+      return obj.map(normalizeKeys);
     }
 
-    const normalized: any = {}
+    const normalized: any = {};
     for (const [key, value] of Object.entries(obj)) {
       // Convert key to string if it's not already
-      const stringKey = String(key)
-      normalized[stringKey] = normalizeKeys(value)
+      const stringKey = String(key);
+      normalized[stringKey] = normalizeKeys(value);
     }
-    return normalized
-  }
+    return normalized;
+  };
 
   const handleInputChange = (value: string) => {
-    setJsonInput(value)
-    setError(null)
-    setHoistedData(null)
-    setHoistedPath([])
-    
-    if (value.trim() === '') {
-      setJsonData(null)
-      return
+    setJsonInput(value);
+    setError(null);
+    setHoistedData(null);
+    setHoistedPath([]);
+
+    if (value.trim() === "") {
+      setJsonData(null);
+      return;
     }
 
     try {
-      const parsed = JSON.parse(value)
+      const parsed = JSON.parse(value);
       // Normalize keys to ensure all keys are strings
-      const normalized = normalizeKeys(parsed)
-      setJsonData(normalized)
+      const normalized = normalizeKeys(parsed);
+      setJsonData(normalized);
     } catch (e) {
       if (e instanceof Error) {
-        setError(e.message)
+        setError(e.message);
       }
     }
-  }
+  };
 
   const formatJSON = () => {
     if (!jsonInput.trim()) {
-      return
+      return;
     }
 
     try {
-      const parsed = JSON.parse(jsonInput)
-      const formatted = JSON.stringify(parsed, null, 2)
-      setJsonInput(formatted)
-      setError(null)
+      const parsed = JSON.parse(jsonInput);
+      const formatted = JSON.stringify(parsed, null, 2);
+      setJsonInput(formatted);
+      setError(null);
       // Update the tree view with the formatted data
-      const normalized = normalizeKeys(parsed)
-      setJsonData(normalized)
+      const normalized = normalizeKeys(parsed);
+      setJsonData(normalized);
     } catch (e) {
       if (e instanceof Error) {
-        setError(e.message)
+        setError(e.message);
       }
     }
-  }
+  };
 
   const handleHoist = (path: string[], data: any) => {
-    setHoistedData(data)
-    setHoistedPath(path)
-  }
+    setHoistedData(data);
+    setHoistedPath(path);
+  };
 
   const handleResetHoist = () => {
-    setHoistedData(null)
-    setHoistedPath([])
-  }
+    setHoistedData(null);
+    setHoistedPath([]);
+  };
 
   const handleBreadcrumbNavigate = (index: number) => {
     if (hoistedData) {
       // If navigating to root of hoisted, reset hoist
       if (index < 0) {
-        handleResetHoist()
+        handleResetHoist();
       }
       // Otherwise, navigate within hoisted path by updating hoisted path
-      const newPath = hoistedPath.slice(0, index + 1)
+      const newPath = hoistedPath.slice(0, index + 1);
       if (newPath.length === 0) {
-        handleResetHoist()
+        handleResetHoist();
       } else {
         // Re-hoist to the new path location
         // We need to find the data at this path
-        let currentData = jsonData
+        let currentData = jsonData;
         for (const segment of newPath) {
-          if (segment.startsWith('[') && segment.endsWith(']')) {
+          if (segment.startsWith("[") && segment.endsWith("]")) {
             // Array index
-            const index = parseInt(segment.slice(1, -1))
-            currentData = currentData[index]
+            const index = parseInt(segment.slice(1, -1));
+            currentData = currentData[index];
           } else {
             // Object key
-            currentData = currentData[segment]
+            currentData = currentData[segment];
           }
         }
-        setHoistedData(currentData)
-        setHoistedPath(newPath)
+        setHoistedData(currentData);
+        setHoistedPath(newPath);
       }
     }
-  }
+  };
 
   const loadSampleData = () => {
     const sample = {
@@ -122,8 +122,8 @@ function App() {
         zip: "10001",
         coordinates: {
           lat: 40.7128,
-          lng: -74.0060
-        }
+          lng: -74.006,
+        },
       },
       hobbies: ["reading", "coding", "traveling"],
       active: true,
@@ -132,22 +132,22 @@ function App() {
         tags: ["user", "premium"],
         settings: {
           theme: "dark",
-          notifications: true
-        }
-      }
-    }
-    const sampleString = JSON.stringify(sample, null, 2)
-    setJsonInput(sampleString)
-    setJsonData(sample)
-    setError(null)
-    setHoistedData(null)
-    setHoistedPath([])
-  }
+          notifications: true,
+        },
+      },
+    };
+    const sampleString = JSON.stringify(sample, null, 2);
+    setJsonInput(sampleString);
+    setJsonData(sample);
+    setError(null);
+    setHoistedData(null);
+    setHoistedPath([]);
+  };
 
   // Get the data to display (hoisted or full)
-  const displayData = hoistedData || jsonData
+  const displayData = hoistedData || jsonData;
   // Show hoisted path in breadcrumbs
-  const breadcrumbPath = hoistedPath
+  const breadcrumbPath = hoistedPath;
 
   return (
     <div className="app">
@@ -158,28 +158,17 @@ function App() {
           Load Sample Data
         </button>
       </header>
-      
+
       <div className="app-container">
         <div className="input-panel">
           <div className="panel-header">
             <h2>JSON Input</h2>
-            <button 
-              onClick={formatJSON} 
-              className="format-button"
-              title="Format JSON"
-              disabled={!jsonInput.trim()}
-            >
+            <button onClick={formatJSON} className="format-button" title="Format JSON" disabled={!jsonInput.trim()}>
               <span className="format-icon">✨</span>
               Format
             </button>
           </div>
-          <textarea
-            className={`json-input ${error ? 'error' : ''}`}
-            value={jsonInput}
-            onChange={(e) => handleInputChange(e.target.value)}
-            placeholder="Paste your JSON here..."
-            spellCheck={false}
-          />
+          <textarea className={`json-input ${error ? "error" : ""}`} value={jsonInput} onChange={(e) => handleInputChange(e.target.value)} placeholder="Paste your JSON here..." spellCheck={false} />
           {error && (
             <div className="error-message">
               <strong>Error:</strong> {error}
@@ -194,19 +183,9 @@ function App() {
           <div className="tree-container">
             {displayData ? (
               <>
-                <Breadcrumbs
-                  path={breadcrumbPath}
-                  onNavigate={handleBreadcrumbNavigate}
-                  onReset={handleResetHoist}
-                  isHoisted={!!hoistedData}
-                />
+                <Breadcrumbs path={breadcrumbPath} onNavigate={handleBreadcrumbNavigate} onReset={handleResetHoist} isHoisted={!!hoistedData} />
                 <div className="tree-content">
-                  <JsonTree
-                    data={displayData}
-                    path={[]}
-                    onHoist={handleHoist}
-                    isVisible={true}
-                  />
+                  <JsonTree data={displayData} path={[]} onHoist={handleHoist} isVisible={true} />
                 </div>
               </>
             ) : (
@@ -224,8 +203,17 @@ function App() {
           </div>
         </div>
       </div>
+
+      <footer className="app-footer">
+        <p>
+          Made with <span className="heart">❤️</span> by <strong>Pratik</strong>
+        </p>
+        <p className="footer-note">
+          <em>So that Pratik can confirm the data is correct!</em>
+        </p>
+      </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
